@@ -8,11 +8,24 @@
  */
 import express from "express";
 import cors from "cors";
+import cookerParser from "cookie-parser";
+import compression from "compression";
+import helmet from "helmet";
 
 /**
  * Custom modules
  */
 import config from "@/configs";
+
+/**
+ * Middlewares
+ */
+import limiter from "@/lib/express_rate_limit";
+
+/**
+ * Root Router
+ */
+import v1Routes from "@/routes/v1";
 
 /**
  * Types
@@ -41,13 +54,42 @@ const corsOptions: CorsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookerParser());
+app.use(
+	compression({
+		threshold: 1024,
+	}),
+);
+app.use(helmet());
 
-app.get("/", (req, res) => {
-	res.json({
-		message: "Hello World",
-	});
-});
+app.use(limiter);
 
-app.listen(config.PORT, () => {
-	console.log(`Server running on: http://localhost:${config.PORT}`);
-});
+(async () => {
+	try {
+		app.use("/api/v1", v1Routes);
+
+		app.listen(config.PORT, () => {
+			console.log(`Server running on: http://localhost:${config.PORT}`);
+		});
+	} catch (err) {
+		console.log("Failed to start the server", err);
+
+		if (config.NODE_ENV === "production") {
+			process.exit(1);
+		}
+	}
+})();
+
+const handleServerShutdown = async () => {
+	try {
+		console.log("Server SHUTDOWN");
+		process.exit(0);
+	} catch (err) {
+		console.log("Error during server shutdown", err);
+	}
+};
+
+process.on("SIGTERM", handleServerShutdown);
+process.on("SIGINT", handleServerShutdown);

@@ -48,6 +48,6 @@
 		"moduleDetection": "force",
 		"skipLibCheck": true
 	},
-	"include": ["src/**/*"],
+	"include": ["src/**/*", "src/routes/v1"],
 	"exclude": ["node_modules"]
 }
