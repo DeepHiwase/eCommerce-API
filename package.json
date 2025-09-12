@@ -1,18 +1,33 @@
 {
-  "name": "e-commerce-api",
-  "version": "1.0.0",
-  "description": "API for ECommerce Application",
-  "main": "dist/server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "e-commerce"
-  ],
-  "author": "deephiwase",
-  "license": "Apache-2.0",
-  "devDependencies": {
-    "prettier": "^3.6.2",
-    "typescript": "^5.9.2"
-  }
+	"name": "e-commerce-api",
+	"version": "1.0.0",
+	"description": "API for ECommerce Application",
+	"main": "dist/server.js",
+	"scripts": {
+		"dev": "nodemon",
+		"build": "tsc",
+		"start": "node src/server.js",
+		"prepare": "husky"
+	},
+	"keywords": [
+		"e-commerce"
+	],
+	"author": "deephiwase",
+	"license": "Apache-2.0",
+	"lint-staged": {
+		"**/*": "prettier --write --ignore-unknown"
+	},
+	"devDependencies": {
+		"@types/express": "^5.0.3",
+		"@types/node": "^24.3.1",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.1.6",
+		"nodemon": "^3.1.10",
+		"prettier": "^3.6.2",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.9.2"
+	},
+	"dependencies": {
+		"express": "^5.1.0"
+	}
 }
