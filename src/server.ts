@@ -8,8 +8,19 @@
  */
 import express from "express";
 
+/**
+ * Custom modules
+ */
+import config from "@/configs";
+
 const app = express();
 
-app.listen(3000, () => {
-	console.log(`Server running on: http://localhost:${3000}`);
+app.get("/", (req, res) => {
+	res.json({
+		message: "Hello World",
+	});
+});
+
+app.listen(config.PORT, () => {
+	console.log(`Server running on: http://localhost:${config.PORT}`);
 });
