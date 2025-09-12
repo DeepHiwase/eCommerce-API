@@ -14,6 +14,7 @@ const config = {
 	PORT: process.env.PORT || 3000,
 	NODE_ENV: process.env.NODE_ENV,
 	WHITELIST_ORIGINS: ["https://docs.e-commerce-api.deephiwase.com"],
+	MONGO_URI: process.env.MONGO_URI,
 };
 
 export default config;
