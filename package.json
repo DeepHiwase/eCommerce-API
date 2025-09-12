@@ -1,0 +1,13 @@
+{
+  "name": "e-commerce-api",
+  "version": "1.0.0",
+  "description": "API for ECommerce Application",
+  "main": "dist/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["e-commerce"],
+  "author": "deephiwase",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.15.1"
+}
