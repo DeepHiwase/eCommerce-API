@@ -34,6 +34,9 @@ importers:
       winston:
         specifier: ^3.17.0
         version: 3.17.0
+      zod:
+        specifier: ^4.1.8
+        version: 4.1.8
     devDependencies:
       "@types/compression":
         specifier: ^1.8.1
@@ -1651,6 +1654,12 @@ packages:
       }
     engines: { node: ">=6" }
 
+  zod@4.1.8:
+    resolution:
+      {
+        integrity: sha512-5R1P+WwQqmmMIEACyzSvo4JXHY5WiAFHRMg+zBZKgKS+Q1viRa0C1hmUKtHltoIFKtIdki3pRxkmpP74jnNYHQ==,
+      }
+
 snapshots:
   "@colors/colors@1.6.0": {}
 
@@ -2550,3 +2559,5 @@ snapshots:
   yaml@2.8.1: {}
 
   yn@3.1.1: {}
+
+  zod@4.1.8: {}
