@@ -3,9 +3,7 @@
  * @license Apache-2.0
  */
 
-/**
- * Node modules
- */
+// Node Modules
 import dotenv from "dotenv";
 
 dotenv.config();

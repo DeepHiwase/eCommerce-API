@@ -3,35 +3,22 @@
  * @license Apache-2.0
  */
 
-/**
- * Node modules
- */
+// Node Modules
 import express from "express";
 import cors from "cors";
 import cookerParser from "cookie-parser";
 import compression from "compression";
 import helmet from "helmet";
-
-/**
- * Custom modules
- */
+// Custom Modules
 import config from "@/configs";
 import { connectToDatabase, disconnectFromDatabase } from "@/lib/mongoose";
 import { logger } from "@/lib/winston";
-
-/**
- * Middlewares
- */
+// Middlewares
 import limiter from "@/lib/express_rate_limit";
-
-/**
- * Root Router
- */
+import errorHandler from "@/middlewares/errorHandler";
+// Root Router
 import v1Routes from "@/routes/v1";
-
-/**
- * Types
- */
+// Types
 import type { CorsOptions } from "cors";
 
 const app = express();
@@ -73,6 +60,8 @@ app.use(limiter);
 		await connectToDatabase();
 
 		app.use("/api/v1", v1Routes);
+
+		app.use(errorHandler);
 
 		app.listen(config.PORT, () => {
 			logger.info(`Server running on: http://localhost:${config.PORT}`);

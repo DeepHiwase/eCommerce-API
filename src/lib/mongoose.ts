@@ -3,20 +3,12 @@
  * @license Apache-2.0
  */
 
-/**
- * Node modules
- */
+// Node Modules
 import mongoose from "mongoose";
-
-/**
- * Custom modules
- */
+// Custom Modules
 import config from "@/configs";
 import { logger } from "@/lib/winston";
-
-/**
- * Types
- */
+// Types
 import type { ConnectOptions } from "mongoose";
 
 const clientOptions: ConnectOptions = {

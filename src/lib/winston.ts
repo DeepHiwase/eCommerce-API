@@ -3,14 +3,9 @@
  * @license Apache-2.0
  */
 
-/**
- * Node modules
- */
+// Node Modules
 import winston from "winston";
-
-/**
- * Custom modules
- */
+// Custom Modules
 import config from "@/configs";
 
 const { timestamp, printf, json, errors, combine, colorize, align } =
