@@ -5,11 +5,13 @@
 
 // Node Modules
 import { Router } from "express";
+// Constants
+import { OK } from "@/constants/http";
 
 const router: Router = Router();
 
 router.get("/", (req, res) => {
-	res.status(200).json({
+	res.status(OK).json({
 		message: "API is live",
 		version: "1.0.0",
 		docs: "https://docs.e-commerce-api.deephiwase.com",
