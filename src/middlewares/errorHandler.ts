@@ -7,11 +7,13 @@
 import { logger } from "@/lib/winston";
 // Types
 import type { ErrorRequestHandler } from "express";
+// Constants
+import { INTERNAL_SERVER_ERROR } from "@/constants/http";
 
 const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
 	logger.error(`PATH: ${req.path}`, error);
 
-	return res.status(500).send("Internal Server Error");
+	return res.status(INTERNAL_SERVER_ERROR).send("Internal Server Error");
 };
 
 export default errorHandler;
