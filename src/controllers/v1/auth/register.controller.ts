@@ -5,6 +5,7 @@
 
 // Custom Modules
 import catchErrors from "@/utils/catchErrors";
+import createAccount from "@/services/v1/auth/createAccount.service";
 // Schemas
 import { registerSchema } from "@/validations/auth.schema";
 
@@ -15,6 +16,7 @@ const registerHandler = catchErrors(async (req, res) => {
 		userAgent: req.headers["user-agent"],
 	});
 	// call service
+	const {} = await createAccount(request);
 	// return response
 });
 
