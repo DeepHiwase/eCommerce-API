@@ -5,6 +5,8 @@
 
 // Node Modules
 import { Schema, model, type Document } from "mongoose";
+// Custom Modules
+import { hashValue } from "@/lib/bcrypt";
 
 export interface UserDocument extends Document {
 	email: string;
@@ -44,6 +46,15 @@ const userSchema = new Schema<UserDocument>(
 		timestamps: true,
 	},
 );
+
+userSchema.pre("save", async function (next) {
+	if (!this.isModified("password")) {
+		return next();
+	}
+
+	this.password = await hashValue(this.password);
+	next();
+});
 
 const UserModel = model<UserDocument>("User", userSchema);
 
