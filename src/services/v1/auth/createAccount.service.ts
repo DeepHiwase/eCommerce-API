@@ -3,9 +3,12 @@
  * @license Apache-2.0
  */
 
+// Node Modules
+import jwt from "jsonwebtoken";
 // Custom Modules
 import appAssert from "@/utils/appAssert";
 import { oneYearFromNow } from "@/utils/date";
+import config from "@/configs";
 // Models
 import UserModel from "@/models/user.model";
 import VerificationCodeModel from "@/models/verificationCode.model";
@@ -50,7 +53,35 @@ const createAccount = async (data: CreateAccountParams) => {
 	});
 
 	// sign access token & refresh token
+	const refreshToken = jwt.sign(
+		{
+			session: session._id,
+		},
+		config.JWT_REFRESH_SECRET,
+		{
+			audience: [newUser.role],
+			expiresIn: config.REFRESH_TOKEN_EXPIRY,
+		},
+	);
+
+	const accessToken = jwt.sign(
+		{
+			userId: newUser._id,
+			session: session._id,
+		},
+		config.JWT_ACCESS_SECRET,
+		{
+			audience: [newUser.role],
+			expiresIn: config.ACCESS_TOKEN_EXPIRY,
+		},
+	);
+
 	// return user & tokens
+	return {
+		newUser,
+		accessToken,
+		refreshToken,
+	};
 };
 
 export default createAccount;

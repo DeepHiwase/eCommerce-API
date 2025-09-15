@@ -6,8 +6,11 @@
 // Custom Modules
 import catchErrors from "@/utils/catchErrors";
 import createAccount from "@/services/v1/auth/createAccount.service";
+import { logger } from "@/lib/winston";
 // Schemas
 import { registerSchema } from "@/validations/auth.schema";
+// Constants
+import { CREATED } from "@/constants/http";
 
 const registerHandler = catchErrors(async (req, res) => {
 	// validate request
@@ -16,8 +19,15 @@ const registerHandler = catchErrors(async (req, res) => {
 		userAgent: req.headers["user-agent"],
 	});
 	// call service
-	await createAccount(request);
+	const { newUser, accessToken, refreshToken } = await createAccount(request);
+
+	logger.info("User registered successfully", {
+		username: newUser.email,
+		role: newUser.role,
+	});
+
 	// return response
+	return res.status(CREATED).json(newUser);
 });
 
 export default registerHandler;
