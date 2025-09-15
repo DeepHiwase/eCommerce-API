@@ -6,7 +6,7 @@
 // Node Modules
 import { Schema, model, type Document } from "mongoose";
 // Custom Modules
-import { hashValue } from "@/lib/bcrypt";
+import { compareValue, hashValue } from "@/lib/bcrypt";
 
 export interface UserDocument extends Document {
 	email: string;
@@ -15,6 +15,7 @@ export interface UserDocument extends Document {
 	verified: boolean;
 	createdAt: Date;
 	updatedAt: Date;
+	comparePassword(val: string): Promise<boolean>;
 	omitPassword(): Pick<
 		UserDocument,
 		"id" | "email" | "role" | "verified" | "createdAt" | "updatedAt"
@@ -59,6 +60,10 @@ userSchema.pre("save", async function (next) {
 	this.password = await hashValue(this.password);
 	next();
 });
+
+userSchema.methods.comparePassword = async function (val: string) {
+	return await compareValue(val, this.password);
+};
 
 userSchema.methods.omitPassword = function () {
 	const user = this.toObject();
