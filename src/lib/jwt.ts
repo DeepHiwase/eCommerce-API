@@ -4,7 +4,7 @@
  */
 
 // Node Modules
-import jwt, { type SignOptions } from "jsonwebtoken";
+import jwt, { type VerifyOptions, type SignOptions } from "jsonwebtoken";
 // Custom Modules
 import config from "@/configs";
 // Types
@@ -51,4 +51,25 @@ export const signToken = (
 		...signOpts,
 		audience: [audience],
 	});
+};
+
+export const verifyToken = <TPayload extends object = AccessTokenPayload>(
+	token: string,
+	options?: VerifyOptions & { secret?: string },
+) => {
+	const { secret = config.JWT_ACCESS_SECRET, ...verifyOpts } = options || {};
+
+	try {
+		const payload = jwt.verify(token, secret, {
+			...verifyOpts,
+		}) as TPayload;
+
+		return {
+			payload,
+		};
+	} catch (err: any) {
+		return {
+			error: err.message,
+		};
+	}
 };
