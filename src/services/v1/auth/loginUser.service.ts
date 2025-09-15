@@ -3,11 +3,9 @@
  * @license Apache-2.0
  */
 
-// Node Modules
-import jwt from "jsonwebtoken";
 // Custom Modules
 import appAssert from "@/utils/appAssert";
-import config from "@/configs";
+import { refreshTokenSignOptions, signToken } from "@/lib/jwt";
 // Models
 import UserModel from "@/models/user.model";
 import SessionModel from "@/models/session.model";
@@ -40,25 +38,22 @@ const loginUser = async ({ email, password, userAgent }: LoginUserParams) => {
 	});
 
 	const sessionInfo = {
-		session: session._id,
+		sessionId: session._id,
 	};
 
 	// sign access token & refresh token
-	const refreshToken = jwt.sign(sessionInfo, config.JWT_REFRESH_SECRET, {
-		audience: [user.role],
-		expiresIn: config.REFRESH_TOKEN_EXPIRY,
-	});
+	const refreshToken = signToken(
+		sessionInfo,
+		user.role,
+		refreshTokenSignOptions,
+	);
 
-	const accessToken = jwt.sign(
+	const accessToken = signToken(
 		{
 			...sessionInfo,
 			userId,
 		},
-		config.JWT_ACCESS_SECRET,
-		{
-			audience: [user.role],
-			expiresIn: config.ACCESS_TOKEN_EXPIRY,
-		},
+		user.role,
 	);
 
 	// return user & tokens
