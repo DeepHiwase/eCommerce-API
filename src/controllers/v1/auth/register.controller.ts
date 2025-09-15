@@ -16,7 +16,7 @@ const registerHandler = catchErrors(async (req, res) => {
 		userAgent: req.headers["user-agent"],
 	});
 	// call service
-	const {} = await createAccount(request);
+	await createAccount(request);
 	// return response
 });
 

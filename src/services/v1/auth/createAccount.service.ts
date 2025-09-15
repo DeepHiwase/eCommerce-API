@@ -3,6 +3,13 @@
  * @license Apache-2.0
  */
 
+// Custom Modules
+import appAssert from "@/utils/appAssert";
+// Models
+import UserModel from "@/models/user.model";
+// Constants
+import { CONFLICT } from "@/constants/http";
+
 type CreateAccountParams = {
 	email: string;
 	password: string;
@@ -12,6 +19,11 @@ type CreateAccountParams = {
 
 const createAccount = async (data: CreateAccountParams) => {
 	// verify existing user doesn't exists
+	const existingUser = await UserModel.exists({
+		email: data.email,
+	});
+	appAssert(!existingUser, CONFLICT, "Email already in use");
+
 	// create user
 	// create verification code
 	// send verification email
