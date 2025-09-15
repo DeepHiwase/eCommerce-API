@@ -7,6 +7,7 @@
 import catchErrors from "@/utils/catchErrors";
 import createAccount from "@/services/v1/auth/createAccount.service";
 import { logger } from "@/lib/winston";
+import { setAuthCookies } from "@/utils/cookies";
 // Schemas
 import { registerSchema } from "@/validations/auth.schema";
 // Constants
@@ -26,8 +27,10 @@ const registerHandler = catchErrors(async (req, res) => {
 		role: newUser.role,
 	});
 
-	// return response
-	return res.status(CREATED).json(newUser);
+	// return response & before it create cookies
+	return setAuthCookies({ res, accessToken, refreshToken })
+		.status(CREATED)
+		.json(newUser);
 });
 
 export default registerHandler;
