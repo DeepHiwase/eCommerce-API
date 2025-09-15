@@ -15,6 +15,10 @@ export interface UserDocument extends Document {
 	verified: boolean;
 	createdAt: Date;
 	updatedAt: Date;
+	omitPassword(): Pick<
+		UserDocument,
+		"id" | "email" | "role" | "verified" | "createdAt" | "updatedAt"
+	>;
 }
 
 const userSchema = new Schema<UserDocument>(
@@ -55,6 +59,12 @@ userSchema.pre("save", async function (next) {
 	this.password = await hashValue(this.password);
 	next();
 });
+
+userSchema.methods.omitPassword = function () {
+	const user = this.toObject();
+	delete user.password;
+	return user;
+};
 
 const UserModel = model<UserDocument>("User", userSchema);
 

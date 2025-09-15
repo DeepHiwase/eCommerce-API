@@ -78,7 +78,7 @@ const createAccount = async (data: CreateAccountParams) => {
 
 	// return user & tokens
 	return {
-		newUser,
+		newUser: newUser.omitPassword(),
 		accessToken,
 		refreshToken,
 	};
