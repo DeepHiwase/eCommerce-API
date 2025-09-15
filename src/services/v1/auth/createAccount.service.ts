@@ -9,6 +9,7 @@ import { oneYearFromNow } from "@/utils/date";
 // Models
 import UserModel from "@/models/user.model";
 import VerificationCodeModel from "@/models/verificationCode.model";
+import SessionModel from "@/models/session.model";
 // Constants
 import { CONFLICT } from "@/constants/http";
 import VerificationCodeTypes from "@/constants/verificationCodeTypes";
@@ -40,8 +41,14 @@ const createAccount = async (data: CreateAccountParams) => {
 		type: VerificationCodeTypes.EmailVerification,
 		expiresAt: oneYearFromNow(),
 	});
+
 	// send verification email
 	// create session
+	const session = await SessionModel.create({
+		userId: newUser._id,
+		userAgent: data.userAgent,
+	});
+
 	// sign access token & refresh token
 	// return user & tokens
 };
