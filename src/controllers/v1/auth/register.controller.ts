@@ -23,7 +23,7 @@ const registerHandler = catchErrors(async (req, res) => {
 	const { newUser, accessToken, refreshToken } = await createAccount(request);
 
 	logger.info("User registered successfully", {
-		username: newUser.email,
+		email: newUser.email,
 		role: newUser.role,
 	});
 
