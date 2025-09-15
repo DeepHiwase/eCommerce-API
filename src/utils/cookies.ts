@@ -34,6 +34,10 @@ type SetAuthCookiesParams = {
 	refreshToken: string;
 };
 
+/**
+ * @description to set auth cookies to the response object
+ * @returns response object with auth cookies attached
+ */
 export const setAuthCookies = ({
 	res,
 	accessToken,
