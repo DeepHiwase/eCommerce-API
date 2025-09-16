@@ -10,6 +10,7 @@ import registerHandler from "@/controllers/v1/auth/register.controller";
 import loginHandler from "@/controllers/v1/auth/login.controller";
 import logoutHandler from "@/controllers/v1/auth/logout.controller";
 import refreshHandler from "@/controllers/v1/auth/refresh.controller";
+import verifyEmailHandler from "@/controllers/v1/auth/verifyEmail.controller";
 
 const router: Router = Router();
 
@@ -17,5 +18,6 @@ router.post("/register", registerHandler);
 router.post("/login", loginHandler);
 router.get("/logout", logoutHandler);
 router.get("/refresh", refreshHandler);
+router.get("/email/verify/:code", verifyEmailHandler);
 
 export default router;
