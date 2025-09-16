@@ -8,11 +8,11 @@ import z from "zod";
 // Custom Modules
 import { logger } from "@/lib/winston";
 import AppError from "@/utils/AppError";
+import { clearAuthCookies, REFRESH_PATH } from "@/utils/cookies";
 // Types
 import type { ErrorRequestHandler, Response } from "express";
 // Constants
 import { BAD_REQUEST, INTERNAL_SERVER_ERROR } from "@/constants/http";
-import { clearAuthCookies, REFRESH_PATH } from "@/utils/cookies";
 
 const handleZodError = (res: Response, error: z.ZodError) => {
 	const errors = error.issues.map((err) => ({
