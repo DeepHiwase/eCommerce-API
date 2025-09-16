@@ -19,6 +19,8 @@ const config = {
 	JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET!,
 	REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY as ms.StringValue,
 	ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY as ms.StringValue,
+	RESEND_API_KEY: process.env.RESEND_API_KEY,
+	EMAIL_SENDER: process.env.EMAIL_SENDER!,
 };
 
 export default config;

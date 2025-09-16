@@ -7,6 +7,9 @@
 import appAssert from "@/utils/appAssert";
 import { oneYearFromNow } from "@/utils/date";
 import { refreshTokenSignOptions, signToken } from "@/lib/jwt";
+import { sendMail } from "@/utils/sendMail";
+import { getVerifyEmailTemplate } from "@/utils/emailTemplates";
+import config from "@/configs";
 // Models
 import UserModel from "@/models/user.model";
 import VerificationCodeModel from "@/models/verificationCode.model";
@@ -44,6 +47,15 @@ const createAccount = async (data: CreateAccountParams) => {
 	});
 
 	// send verification email
+	const url = `${config.WHITELIST_ORIGINS}/email/verify/${verificationCode._id}`;
+	const { error } = await sendMail({
+		to: newUser.email,
+		...getVerifyEmailTemplate(url),
+	});
+	if (error) {
+		console.log(error);
+	}
+
 	// create session
 	const session = await SessionModel.create({
 		userId: newUser._id,
