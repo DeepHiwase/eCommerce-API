@@ -15,17 +15,35 @@ import UserModel from "@/models/user.model";
 import VerificationCodeModel from "@/models/verificationCode.model";
 import SessionModel from "@/models/session.model";
 // Constants
-import { CONFLICT } from "@/constants/http";
+import { CONFLICT, FORBIDDEN } from "@/constants/http";
 import VerificationCodeTypes from "@/constants/verificationCodeTypes";
+import AppErrorCode from "@/constants/appErrorCode";
+import { logger } from "@/lib/winston";
 
 type CreateAccountParams = {
 	email: string;
 	password: string;
-	role: "retailer" | "customer";
+	role: "retailer" | "customer" | "admin";
 	userAgent?: string;
 };
 
 const createAccount = async (data: CreateAccountParams) => {
+	// handle user is registering with admin role without admin email
+	if (
+		data.role === "admin" &&
+		!config.WHITELIST_ADMIN_MAIL.includes(data.email)
+	) {
+		logger.warn(
+			`User with email ${data.email} tried to register as an admin but is not in whitelist`,
+		);
+		appAssert(
+			null,
+			FORBIDDEN,
+			"You can not register as an admin",
+			AppErrorCode.AuthorizationError,
+		);
+	}
+
 	// verify existing user doesn't exists
 	const existingUser = await UserModel.exists({
 		email: data.email,

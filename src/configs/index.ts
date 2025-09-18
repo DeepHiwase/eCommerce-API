@@ -21,6 +21,9 @@ const config = {
 	ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY as ms.StringValue,
 	RESEND_API_KEY: process.env.RESEND_API_KEY,
 	EMAIL_SENDER: process.env.EMAIL_SENDER!,
+	WHITELIST_ADMIN_MAIL: ["deephiwase3@gmail.com"],
+	defaultResLimit: 20,
+	defaultResOffset: 0,
 };
 
 export default config;

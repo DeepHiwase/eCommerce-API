@@ -12,6 +12,9 @@ import authorize from "@/middlewares/authorize";
 import getCurrentUserHandler from "@/controllers/v1/user/getCurrentUser.controller";
 import updateCurrentUserHandler from "@/controllers/v1/user/updateCurrentUser.controller";
 import deleteCurrentUserHandler from "@/controllers/v1/user/deleteCurrentUser.controller";
+import getAllUsersHandler from "@/controllers/v1/user/getAllUsers.controller";
+import getUserByIdHandler from "@/controllers/v1/user/getUserById.controller";
+import deleteUserByIdHandler from "@/controllers/v1/user/deleteUserById.controller";
 
 const router: Router = Router();
 
@@ -34,6 +37,18 @@ router.delete(
 	authenticate,
 	authorize(["admin", "customer", "retailer"]),
 	deleteCurrentUserHandler,
+);
+
+// admin permissions
+router.get("/", authenticate, authorize(["admin"]), getAllUsersHandler);
+
+router.get("/:userId", authenticate, authorize(["admin"]), getUserByIdHandler);
+
+router.delete(
+	"/:userId",
+	authenticate,
+	authorize(["admin"]),
+	deleteUserByIdHandler,
 );
 
 export default router;

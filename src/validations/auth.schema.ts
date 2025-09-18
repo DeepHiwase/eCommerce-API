@@ -17,7 +17,7 @@ export const loginSchema = z.object({
 });
 
 export const registerSchema = loginSchema.extend({
-	role: z.enum(["retailer", "customer"]),
+	role: z.enum(["retailer", "customer", "admin"]),
 });
 
 export const verificationCodeSchema = z.string().min(1).max(24); // based on mongo ID
