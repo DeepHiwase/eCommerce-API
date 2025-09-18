@@ -11,6 +11,7 @@ import authorize from "@/middlewares/authorize";
 // Controller
 import getCurrentUserHandler from "@/controllers/v1/user/getCurrentUser.controller";
 import updateCurrentUserHandler from "@/controllers/v1/user/updateCurrentUser.controller";
+import deleteCurrentUserHandler from "@/controllers/v1/user/deleteCurrentUser.controller";
 
 const router: Router = Router();
 
@@ -26,6 +27,13 @@ router.put(
 	authenticate,
 	authorize(["admin", "customer", "retailer"]),
 	updateCurrentUserHandler,
+);
+
+router.delete(
+	"/current",
+	authenticate,
+	authorize(["admin", "customer", "retailer"]),
+	deleteCurrentUserHandler,
 );
 
 export default router;
