@@ -10,10 +10,11 @@
 		// See also https://aka.ms/tsconfig/module
 		"module": "commonjs",
 		"target": "es6",
-		"types": [],
+		"types": ["express"],
 		"paths": {
 			"@/*": ["src/*"]
 		},
+		"typeRoots": ["./src/@types", "./node_modules/@types"],
 		// For nodejs:
 		// "lib": ["esnext"],
 		// "types": ["node"],
@@ -48,6 +49,6 @@
 		"moduleDetection": "force",
 		"skipLibCheck": true
 	},
-	"include": ["src/**/*", "src/routes/v1"],
+	"include": ["src/**/*", "src/routes/v1", "src/@types/**/*"],
 	"exclude": ["node_modules"]
 }
