@@ -36,7 +36,7 @@ const userSchema = new Schema<UserDocument>(
 		role: {
 			type: String,
 			enum: {
-				values: ["retailer", "customer"],
+				values: ["retailer", "customer", "admin"],
 				message: "{VALUE} is not supported",
 			},
 			default: "customer",
