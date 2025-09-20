@@ -24,6 +24,9 @@ const config = {
 	WHITELIST_ADMIN_MAIL: ["deephiwase3@gmail.com"],
 	defaultResLimit: 20,
 	defaultResOffset: 0,
+	CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME!,
+	CLOUDINARY_CLOUD_API_KEY: process.env.CLOUDINARY_CLOUD_API_KEY!,
+	CLOUDINARY_CLOUD_API_SECRET: process.env.CLOUDINARY_CLOUD_API_SECRET!,
 };
 
 export default config;

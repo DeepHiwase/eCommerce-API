@@ -8,6 +8,8 @@ import { Router } from "express";
 // Routes
 import authRoutes from "@/routes/v1/auth.routes";
 import userRoutes from "@/routes/v1/user.routes";
+import categoryRoutes from "@/routes/v1/category.routes";
+import productRoutes from "@/routes/v1/product.routes";
 // Constants
 import { OK } from "@/constants/http";
 
@@ -25,5 +27,9 @@ router.get("/", (req, res) => {
 router.use("/auth", authRoutes);
 // protected routes
 router.use("/user", userRoutes);
+
+router.use("/categories", categoryRoutes);
+
+router.use("/products", productRoutes);
 
 export default router;
