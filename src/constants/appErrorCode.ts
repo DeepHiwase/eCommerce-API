@@ -6,6 +6,7 @@
 const enum AppErrorCode {
 	InvalidAccessToken = "InvalidAccessToken",
 	AuthorizationError = "AuthorizationError",
+	NotFoundError = "NotFoundError",
 }
 
 export default AppErrorCode;

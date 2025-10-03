@@ -16,6 +16,7 @@ import { logger } from "@/lib/winston";
 // Middlewares
 import limiter from "@/lib/express_rate_limit";
 import errorHandler from "@/middlewares/errorHandler";
+import notFoundHandler from "@/middlewares/notFound";
 // Root Router
 import v1Routes from "@/routes/v1";
 // Types
@@ -60,6 +61,8 @@ app.use(limiter);
 		await connectToDatabase();
 
 		app.use("/api/v1", v1Routes);
+
+		app.use(notFoundHandler);
 
 		app.use(errorHandler);
 
