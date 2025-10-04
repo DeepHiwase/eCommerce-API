@@ -48,3 +48,7 @@ export const getAllProductsQueryParamsSchema = z.object({
 		z.number().min(0).optional().default(config.defaultResOffset),
 	),
 });
+
+export const getProductsByRetailerUrlParamsSchema = z.object({
+	retailerId: objectIdSchema,
+});

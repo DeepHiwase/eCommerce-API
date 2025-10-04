@@ -13,6 +13,7 @@ import uploadProductImages from "@/middlewares/uploadProductImages";
 // Controller
 import createProductHandler from "@/controllers/v1/product/createProduct.controller";
 import getAllProductsHandler from "@/controllers/v1/product/getAllProducts.controller";
+import getProductsByRetailerHandler from "@/controllers/v1/product/getProductsByRetailer.controller";
 
 const upload = multer();
 
@@ -32,6 +33,13 @@ router.get(
 	authenticate,
 	authorize(["admin", "customer", "retailer"]),
 	getAllProductsHandler,
+);
+
+router.get(
+	"/retailer/:retailerId",
+	authenticate,
+	authorize(["admin", "customer", "retailer"]),
+	getProductsByRetailerHandler,
 );
 
 export default router;
