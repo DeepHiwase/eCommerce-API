@@ -5,6 +5,8 @@
 
 // Node Modules
 import z from "zod";
+// Custom Modules
+import config from "@/configs";
 // Schemas
 import { objectIdSchema } from "@/validations/user.schema";
 
@@ -34,4 +36,15 @@ export const createProductSchema = z.object({
 	brand: z.string().min(2).max(255).optional(),
 	stock: z.preprocess((val) => Number(val), z.number().min(0)),
 	categoryId: objectIdSchema,
+});
+
+export const getAllProductsQueryParamsSchema = z.object({
+	limit: z.preprocess(
+		(val) => Number(val),
+		z.number().min(1).max(50).optional().default(config.defaultResLimit),
+	),
+	offset: z.preprocess(
+		(val) => Number(val),
+		z.number().min(0).optional().default(config.defaultResOffset),
+	),
 });

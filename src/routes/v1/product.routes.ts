@@ -12,6 +12,7 @@ import authorize from "@/middlewares/authorize";
 import uploadProductImages from "@/middlewares/uploadProductImages";
 // Controller
 import createProductHandler from "@/controllers/v1/product/createProduct.controller";
+import getAllProductsHandler from "@/controllers/v1/product/getAllProducts.controller";
 
 const upload = multer();
 
@@ -24,6 +25,13 @@ router.post(
 	upload.array("product_images"),
 	uploadProductImages("post"),
 	createProductHandler,
+);
+
+router.get(
+	"/",
+	authenticate,
+	authorize(["admin", "customer", "retailer"]),
+	getAllProductsHandler,
 );
 
 export default router;
