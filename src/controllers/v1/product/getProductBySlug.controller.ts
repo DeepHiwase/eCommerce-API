@@ -7,7 +7,6 @@
 import appAssert from "@/utils/appAssert";
 import catchErrors from "@/utils/catchErrors";
 // Models
-import UserModel from "@/models/user.model";
 import ProductModel from "@/models/product.model";
 // Schemas
 import { getProductBySlugUrlParamsSchema } from "@/validations/product.schema";

@@ -54,5 +54,5 @@ export const getProductsByRetailerUrlParamsSchema = z.object({
 });
 
 export const getProductBySlugUrlParamsSchema = z.object({
-	slug: z.string({ error: "Slug is required" }),
+	slug: z.string().min(1, { message: "Slug is required" }),
 });
