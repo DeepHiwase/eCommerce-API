@@ -52,3 +52,7 @@ export const getAllProductsQueryParamsSchema = z.object({
 export const getProductsByRetailerUrlParamsSchema = z.object({
 	retailerId: objectIdSchema,
 });
+
+export const getProductBySlugUrlParamsSchema = z.object({
+	slug: z.string({ error: "Slug is required" }),
+});
