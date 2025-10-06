@@ -11,3 +11,7 @@ import { objectIdSchema } from "@/validations/user.schema";
 export const likeProductUrlParamsSchema = z.object({
 	productId: objectIdSchema,
 });
+
+export const unlikeProductUrlParamsSchema = z.object({
+	productId: objectIdSchema,
+});

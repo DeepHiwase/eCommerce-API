@@ -11,6 +11,7 @@ import userRoutes from "@/routes/v1/user.routes";
 import categoryRoutes from "@/routes/v1/category.routes";
 import productRoutes from "@/routes/v1/product.routes";
 import likeRoutes from "@/routes/v1/like.routes";
+import commentRoutes from "@/routes/v1/comment.routes";
 // Constants
 import { OK } from "@/constants/http";
 
@@ -34,5 +35,7 @@ router.use("/categories", categoryRoutes);
 router.use("/products", productRoutes);
 
 router.use("/likes", likeRoutes);
+
+router.use("/comments", commentRoutes);
 
 export default router;
