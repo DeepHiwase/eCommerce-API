@@ -5,6 +5,7 @@
 
 // Node Modules
 import z from "zod";
+import multer from "multer";
 // Custom Modules
 import { logger } from "@/lib/winston";
 import AppError from "@/utils/AppError";
@@ -33,6 +34,13 @@ const handleAppError = (res: Response, error: AppError) => {
 	});
 };
 
+const handleMulterError = (res: Response, error: multer.MulterError) => {
+	return res.status(BAD_REQUEST).json({
+		message: error.message,
+		code: error.code,
+	});
+};
+
 const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
 	logger.error(`PATH: ${req.path}`, error);
 
@@ -46,6 +54,10 @@ const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
 
 	if (error instanceof AppError) {
 		return handleAppError(res, error);
+	}
+
+	if (error instanceof multer.MulterError) {
+		return handleMulterError(res, error);
 	}
 
 	return res.status(INTERNAL_SERVER_ERROR).send("Internal Server Error");

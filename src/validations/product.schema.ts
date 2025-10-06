@@ -56,3 +56,22 @@ export const getProductsByRetailerUrlParamsSchema = z.object({
 export const getProductBySlugUrlParamsSchema = z.object({
 	slug: z.string().min(1, { message: "Slug is required" }),
 });
+
+export const updateProductUrlParamsSchema = z.object({
+	productId: objectIdSchema,
+});
+
+export const updateProductSchema = z.object({
+	name: z.string().min(2).optional(),
+	description: z.string().min(3).optional(),
+	price: z.preprocess((val) => Number(val), z.number().min(0)).optional(),
+	discountedPrice: z
+		.preprocess((val) => Number(val), z.number().min(0).optional())
+		.optional(),
+	images: z.array(imageSchema).optional(),
+	isFeatured: z.boolean().optional().default(false).optional(),
+	ratings: z.array(ratingSchema).optional(),
+	brand: z.string().min(2).max(255).optional(),
+	stock: z.preprocess((val) => Number(val), z.number().min(0)).optional(),
+	categoryId: objectIdSchema.optional(),
+});

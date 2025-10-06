@@ -15,8 +15,12 @@ import createProductHandler from "@/controllers/v1/product/createProduct.control
 import getAllProductsHandler from "@/controllers/v1/product/getAllProducts.controller";
 import getProductsByRetailerHandler from "@/controllers/v1/product/getProductsByRetailer.controller";
 import getProductBySlugHandler from "@/controllers/v1/product/getProductBySlug.controller";
+import updateProductHandler from "@/controllers/v1/product/updateProduct.controller";
 
-const upload = multer();
+const upload = multer({
+	storage: multer.memoryStorage(),
+	limits: { fileSize: 5 * 1024 * 1024 },
+});
 
 const router: Router = Router();
 
@@ -24,7 +28,7 @@ router.post(
 	"/",
 	authenticate,
 	authorize(["retailer"]),
-	upload.array("product_images"),
+	upload.array("product_images", 10),
 	uploadProductImages("post"),
 	createProductHandler,
 );
@@ -48,6 +52,15 @@ router.get(
 	authenticate,
 	authorize(["admin", "customer", "retailer"]),
 	getProductBySlugHandler,
+);
+
+router.put(
+	"/:productId",
+	authenticate,
+	authorize(["retailer"]),
+	upload.array("product_images", 10),
+	uploadProductImages("put"),
+	updateProductHandler,
 );
 
 export default router;

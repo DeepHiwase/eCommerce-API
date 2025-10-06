@@ -4,7 +4,7 @@
  */
 
 // Node Modules
-import z from "zod";
+import z, { file } from "zod";
 import type { NextFunction, Request, Response } from "express";
 // Custom Modules
 import uploadToCloudinary from "@/lib/cloudinary";
@@ -12,9 +12,12 @@ import appAssert from "@/utils/appAssert";
 // Models
 import ProductModel from "@/models/product.model";
 // Schemas
-import { imageSchema } from "@/validations/product.schema";
+import {
+	imageSchema,
+	updateProductUrlParamsSchema,
+} from "@/validations/product.schema";
 // Constants
-import { BAD_REQUEST } from "@/constants/http";
+import { BAD_REQUEST, INTERNAL_SERVER_ERROR } from "@/constants/http";
 
 // const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -25,46 +28,62 @@ import { BAD_REQUEST } from "@/constants/http";
  */
 const uploadProductImages = (method: "post" | "put") => {
 	return async (req: Request, res: Response, next: NextFunction) => {
-		if (method === "put" && !req.files) {
-			next();
-			return;
-		}
-		appAssert(req.files, BAD_REQUEST, "Images are required");
+		try {
+			const images = req.files as Express.Multer.File[];
 
-		// console.log(req.files);
-		const images = req.files as Express.Multer.File[];
+			if (method === "post") {
+				appAssert(
+					images && images.length > 0,
+					BAD_REQUEST,
+					"Images are required",
+				);
+			}
 
-		// if (req.files.size > MAX_FILE_SIZE) {
-		//   res.status(413).json({
-		//     code : 'ValidationError',
-		//     message: 'File size must be less than 2MB'
-		//   })
-		//   return;
-		// }
-		// const fileSizeExceedsLimit = req.files.filter((file) => file.size > MAX_FILE_SIZE );
+			if (method === "put" && (!images || images.length === 0)) {
+				return next();
+			}
 
-		// const { productId } = req.params;
+			const uploadImages = await Promise.all(
+				images!.map(async (image) => {
+					const result = await uploadToCloudinary(image.buffer);
+					return {
+						publicId: result?.public_id!,
+						url: result?.secure_url!,
+						height: result?.height!,
+						width: result?.width!,
+					} satisfies z.infer<typeof imageSchema>;
+				}),
+			);
 
-		// const product = await ProductModel.findById(productId)
-		// 	.select("images")
-		// 	.exec();
+			if (method === "put") {
+				const { productId } = updateProductUrlParamsSchema.parse(req.params);
 
-		const uploadedImages: z.infer<typeof imageSchema>[] = [];
+				if (productId) {
+					const product = await ProductModel.findById(productId)
+						.select("images")
+						.lean()
+						.exec();
 
-		// sequential upload
-		for (const image of images) {
-			const result = await uploadToCloudinary(image.buffer);
-			uploadedImages.push({
-				publicId: result?.public_id!,
-				url: result?.url!,
-				height: result?.height!,
-				width: result?.width!,
+					if (product?.images.length) {
+						req.body.images = [...product.images, ...uploadImages];
+					} else {
+						req.body.images = uploadImages;
+					}
+				} else {
+					req.body.images = uploadImages;
+				}
+			} else {
+				req.body.images = uploadImages;
+			}
+
+			return next();
+		} catch (err) {
+			console.error("Error in uploadProductImages:", err);
+			res.status(INTERNAL_SERVER_ERROR).json({
+				message: "Image upload failed",
+				error: (err as Error).message,
 			});
 		}
-
-		req.body.images = uploadedImages; // its an array of Images
-
-		next();
 	};
 };
 
