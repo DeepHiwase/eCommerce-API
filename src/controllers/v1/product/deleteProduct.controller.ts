@@ -32,7 +32,7 @@ const deleteProductHandler = catchErrors(async (req, res) => {
 
 	appAssert(
 		JSON.parse(JSON.stringify(product.retailer)) === userId ||
-			user?.role === "retailer", // TODO: add for admin also
+			(user?.role as string) === "admin", // Admin can delete any product
 		FORBIDDEN,
 		"Access denied, insufficient permissions",
 		AppErrorCode.AuthorizationError,

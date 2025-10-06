@@ -25,16 +25,32 @@ const deleteUserByIdHandler = catchErrors(async (req, res) => {
 		.exec();
 
 	const images = products.map((product) => product.images);
-	const publicIds = images.flat().map((img) => img.publicId);
-	await cloudinary.api.delete_resources(publicIds);
-	logger.info("Multiple product images deleted from Cloudinary", {
-		publicIds,
-	});
+	const publicIds = images
+		.filter((img) => img && Array.isArray(img))
+		.flat()
+		.map((img) => img.publicId)
+		.filter((id) => id);
+
+	if (publicIds.length > 0) {
+		try {
+			await cloudinary.api.delete_resources(publicIds);
+			logger.info("Multiple product images deleted from Cloudinary", {
+				publicIds,
+			});
+		} catch (error) {
+			logger.error("Failed to delete images from Cloudinary", {
+				publicIds,
+				error,
+			});
+			// Continue with deletion even if Cloudinary fails
+			// to avoid blocking user account deletion
+		}
+	}
 
 	await ProductModel.deleteMany({ retailer: userId });
 	logger.info("Multiple products deleted", {
 		userId,
-		products,
+		productCount: products.length,
 	});
 
 	await SessionModel.deleteMany({ userId });
