@@ -32,6 +32,8 @@ export interface ProductDocument extends Document {
 	};
 	isFeatured: boolean;
 	retailer: Types.ObjectId;
+	likesCount: number;
+	commentsCount: number;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -94,9 +96,11 @@ const productSchema = new Schema<ProductDocument>(
 		ratings: {
 			average: {
 				type: Number,
+				default: 0,
 			},
 			count: {
 				type: Number,
+				default: 0,
 			},
 		},
 		isFeatured: {
@@ -108,6 +112,14 @@ const productSchema = new Schema<ProductDocument>(
 			type: Schema.Types.ObjectId,
 			ref: "User",
 			required: true,
+		},
+		likesCount: {
+			type: Number,
+			default: 0,
+		},
+		commentsCount: {
+			type: Number,
+			default: 0,
 		},
 	},
 	{

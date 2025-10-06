@@ -10,6 +10,7 @@ import authRoutes from "@/routes/v1/auth.routes";
 import userRoutes from "@/routes/v1/user.routes";
 import categoryRoutes from "@/routes/v1/category.routes";
 import productRoutes from "@/routes/v1/product.routes";
+import likeRoutes from "@/routes/v1/like.routes";
 // Constants
 import { OK } from "@/constants/http";
 
@@ -31,5 +32,7 @@ router.use("/user", userRoutes);
 router.use("/categories", categoryRoutes);
 
 router.use("/products", productRoutes);
+
+router.use("/likes", likeRoutes);
 
 export default router;
