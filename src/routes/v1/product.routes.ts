@@ -16,6 +16,7 @@ import getAllProductsHandler from "@/controllers/v1/product/getAllProducts.contr
 import getProductsByRetailerHandler from "@/controllers/v1/product/getProductsByRetailer.controller";
 import getProductBySlugHandler from "@/controllers/v1/product/getProductBySlug.controller";
 import updateProductHandler from "@/controllers/v1/product/updateProduct.controller";
+import deleteProductHandler from "@/controllers/v1/product/deleteProduct.controller";
 
 const upload = multer({
 	storage: multer.memoryStorage(),
@@ -61,6 +62,13 @@ router.put(
 	upload.array("product_images", 10),
 	uploadProductImages("put"),
 	updateProductHandler,
+);
+
+router.delete(
+	"/:productId",
+	authenticate,
+	authorize(["retailer", "admin"]),
+	deleteProductHandler,
 );
 
 export default router;

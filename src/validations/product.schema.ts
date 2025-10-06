@@ -75,3 +75,7 @@ export const updateProductSchema = z.object({
 	stock: z.preprocess((val) => Number(val), z.number().min(0)).optional(),
 	categoryId: objectIdSchema.optional(),
 });
+
+export const deleteProductUrlParamsSchema = z.object({
+	productId: objectIdSchema,
+});
