@@ -16,7 +16,7 @@ import { createProductSchema } from "@/validations/product.schema";
 // Constants
 import { CREATED } from "@/constants/http";
 
-// Purify the blog content
+// Purify the Product content
 const window = new JSDOM("").window;
 const purify = DOMPurify(window);
 

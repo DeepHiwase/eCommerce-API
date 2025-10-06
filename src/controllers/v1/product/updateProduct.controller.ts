@@ -22,7 +22,7 @@ import {
 import { FORBIDDEN, NOT_FOUND, OK } from "@/constants/http";
 import AppErrorCode from "@/constants/appErrorCode";
 
-// Purify the blog content
+// Purify the product content
 const window = new JSDOM("").window;
 const purify = DOMPurify(window);
 
