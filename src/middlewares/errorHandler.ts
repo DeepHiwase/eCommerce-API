@@ -6,7 +6,9 @@
 // Node Modules
 import z from "zod";
 import multer from "multer";
+import Stripe from "stripe";
 // Custom Modules
+import stripe from "@/lib/stripe";
 import { logger } from "@/lib/winston";
 import AppError from "@/utils/AppError";
 import { clearAuthCookies, REFRESH_PATH } from "@/utils/cookies";
@@ -41,6 +43,14 @@ const handleMulterError = (res: Response, error: multer.MulterError) => {
 	});
 };
 
+const handleStripeError = (res: Response, error: Stripe.errors.StripeError) => {
+	console.log(error);
+	return res.status(INTERNAL_SERVER_ERROR).json({
+		message: error.message,
+		code: error.code,
+	});
+};
+
 const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
 	logger.error(`PATH: ${req.path}`, error);
 
@@ -58,6 +68,10 @@ const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
 
 	if (error instanceof multer.MulterError) {
 		return handleMulterError(res, error);
+	}
+
+	if (error instanceof stripe.errors.StripeError) {
+		return handleStripeError(res, error);
 	}
 
 	return res.status(INTERNAL_SERVER_ERROR).send("Internal Server Error");

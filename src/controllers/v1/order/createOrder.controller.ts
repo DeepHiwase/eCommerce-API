@@ -26,12 +26,14 @@ const createOrderHandler = catchErrors(async (req, res) => {
 		return res.status(BAD_REQUEST).json({ message: "Cart is empty" });
 	}
 
-	const totalAmount = cart.items.reduce(
-		(sum, item) =>
-			sum +
-			JSON.parse(JSON.stringify(item))?.quantity *
-				JSON.parse(JSON.stringify(item))?.product.price,
-		0,
+	const totalAmount = Number(
+		cart.items.reduce(
+			(sum, item) =>
+				sum +
+				JSON.parse(JSON.stringify(item))?.quantity *
+					JSON.parse(JSON.stringify(item))?.product.price,
+			0,
+		),
 	);
 
 	const itemsArr = cart.items.map((item) => ({

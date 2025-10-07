@@ -15,6 +15,7 @@ import commentRoutes from "@/routes/v1/comment.routes";
 import wishlistRoutes from "@/routes/v1/wishlist.routes";
 import cartRoutes from "@/routes/v1/cart.routes";
 import orderRoutes from "@/routes/v1/order.routes";
+import paymentRoutes from "@/routes/v1/payment.routes";
 // Constants
 import { OK } from "@/constants/http";
 
@@ -46,5 +47,7 @@ router.use("/wishlist", wishlistRoutes);
 router.use("/cart", cartRoutes);
 
 router.use("/orders", orderRoutes);
+
+router.use("/payment", paymentRoutes);
 
 export default router;
