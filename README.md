@@ -1,7 +1,3 @@
-<p align="center">
-  <a href="" rel="noopener">
-</p>
-
 <h3 align="center">e-commerce-api</h3>
 
 <div align="center">
@@ -13,7 +9,7 @@
 ---
 
 <p align="center">
-  Scalable E-Commerce API created with efficient tech stack with putting some modulerity in codebase
+  Scalable E-Commerce API created with efficient tech stack with putting some modularity in codebase
 
 </p>
 
