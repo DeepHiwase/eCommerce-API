@@ -12,7 +12,7 @@ import helmet from "helmet";
 // Custom Modules
 import config from "@/configs";
 import { connectToDatabase, disconnectFromDatabase } from "@/lib/mongoose";
-import { logger } from "@/lib/winston";
+import { logger, logtail } from "@/lib/winston";
 // Middlewares
 import limiter from "@/lib/express_rate_limit";
 import errorHandler from "@/middlewares/errorHandler";
@@ -83,6 +83,7 @@ const handleServerShutdown = async () => {
 		await disconnectFromDatabase();
 
 		logger.warn("Server SHUTDOWN");
+		await logtail.flush();
 		process.exit(0);
 	} catch (err) {
 		logger.error("Error during server shutdown", err);

@@ -5,6 +5,8 @@
 
 // Node Modules
 import winston from "winston";
+import { Logtail } from "@logtail/node";
+import { LogtailTransport } from "@logtail/winston";
 // Custom Modules
 import config from "@/configs";
 
@@ -12,6 +14,20 @@ const { timestamp, printf, json, errors, combine, colorize, align } =
 	winston.format;
 
 const transports: winston.transport[] = [];
+
+const logtail = new Logtail(config.LOGTAIL_SOURCE_TOKEN, {
+	endpoint: `https://${config.LOGTAIL_INGESTING_HOST}`,
+});
+
+if (config.NODE_ENV === "production") {
+	if (!config.LOGTAIL_SOURCE_TOKEN || !config.LOGTAIL_INGESTING_HOST) {
+		throw new Error(
+			"Logtail source token and ingesting host must be provided in the configuration",
+		);
+	}
+
+	transports.push(new LogtailTransport(logtail));
+}
 
 if (config.NODE_ENV !== "production") {
 	transports.push(
@@ -39,4 +55,4 @@ const logger = winston.createLogger({
 	silent: config.NODE_ENV === "test",
 });
 
-export { logger };
+export { logger, logtail };
