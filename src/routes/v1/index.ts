@@ -25,7 +25,7 @@ router.get("/", (req, res) => {
 	res.status(OK).json({
 		message: "API is live",
 		version: "1.0.0",
-		docs: "https://docs.e-commerce-api.deephiwase.com",
+		docs: "https://docs.e-commerce-api.deephiwase.xyz",
 		timestamp: new Date().toISOString(),
 	});
 });
