@@ -5,8 +5,9 @@
 	"main": "dist/server.js",
 	"scripts": {
 		"dev": "nodemon",
-		"build": "tsc",
-		"start": "node src/server.js",
+		"build": "tsc && tsc-alias",
+		"start": "node dist/server.js",
+		"start:prod": "pm2 start dist/server.js --name e-commerce-api",
 		"prepare": "husky"
 	},
 	"keywords": [
@@ -34,6 +35,7 @@
 		"nodemon": "^3.1.10",
 		"prettier": "^3.6.2",
 		"ts-node": "^10.9.2",
+		"tsc-alias": "^1.8.16",
 		"tsconfig-paths": "^4.2.0",
 		"typescript": "^5.9.2"
 	},
