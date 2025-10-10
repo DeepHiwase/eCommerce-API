@@ -29,6 +29,7 @@ Deployed on
 - VPS - AWS - Url - [live v1 version api](https://e-commerce-api.deephiwase.xyz/api/v1);
 - Docs - GitBook - [Docs url](https://docs.e-commerce-api.deephiwase.xyz/) - if outoff trial then need to update url
 - Status monitoring of api - Better Stack  - [Live page](https://status.e-commerce-api.deephiwase.xyz/)
+- Postman Workspace link - [workspace](https://www.postman.com/altimetry-explorer-95646666/e-commerce-api/overview)
 
 Upcoming working on 
 - Docker Image and compose file
