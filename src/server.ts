@@ -9,6 +9,9 @@ import cors from "cors";
 import cookerParser from "cookie-parser";
 import compression from "compression";
 import helmet from "helmet";
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
+import path from "path";
 // Custom Modules
 import config from "@/configs";
 import { connectToDatabase, disconnectFromDatabase } from "@/lib/mongoose";
@@ -56,6 +59,11 @@ app.use(helmet());
 
 app.use(limiter);
 
+// const swaggerDocument = YAML.load(
+// 	path.join(__dirname, "../docs/swagger/openapi.yaml"),
+// );
+// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 (async () => {
 	try {
 		await connectToDatabase();
@@ -68,6 +76,7 @@ app.use(limiter);
 
 		app.listen(config.PORT, () => {
 			logger.info(`Server running on: http://localhost:${config.PORT}`);
+			// logger.info(`Swagger docs at: http://localhost:${config.PORT}/api-docs`);
 		});
 	} catch (err) {
 		logger.error("Failed to start the server", err);

@@ -1,0 +1,438 @@
+# openapi.yaml
+openapi: 3.0.3
+info:
+  title: E-Commerce API
+  version: 1.0.0
+  description: A Scalable RESTful API for e-commerce related rources like users, comments, products, likes, cart, categories, etc.
+servers:
+  - url: https://e-commerce-api.deephiwase.xyz/api/v1
+    description: API v1 Base Path
+tags:
+  - name: Root
+    description: API Status
+  - name: Authentication
+    description: User authentication operations
+  - name: Users
+    description: User management operations
+  - name: Products
+    description: Product management operations
+  - name: Likes
+    description: Liking/Unliking operations
+  - name: Comments
+    description: Comment management
+  - name: Cart
+    description: Cart operations
+  - name: Categoty
+    description: Category operations
+  - name: Wishlist
+    description: Wishlist operations
+  - name: Order
+    description: Order management operations
+  - name: Payment
+    description: Payment management operations
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
+  # --- Reusable Schemas ---
+  schemas:
+    # --- Data Models ---
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: objectid
+          description: Unique identifier for the users
+          readOnly: true
+        username:
+          type: string
+          description: User's unique username
+          minLength: 50
+
+# --- API Paths ---
+paths:
+  # --- Root ---
+  /:
+    get:
+      tags: [Root]
+      summary: Get API Status
+      description: Provides basic status and information about the API.
+      operationId: getApiStatus
+      security: []
+      responses:
+        "200":
+          description: API Status information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string }
+                  status: { type: string }
+                  version: { type: string }
+                  docs: { type: string, format: url }
+                  timestamp: { type: string, format: date-time }
+              example:
+                message: API is live
+                status: ok
+                version: 1.0.0
+                docs: https://docs.e-commerce-api.deephiwase.xyz
+                timestamp: 2025-05-06T14:30:00.000Z
+
+  # --- Authentication Paths ---
+  /auth/register:
+    post:
+      tags: [Authentication]
+      summary: Register a new user
+      description: Creates a new user account.
+      operationId: registerUser
+      requestBody:
+        description: User registration details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - role
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address.
+                password:
+                  type: string
+                  format: password
+                  description: User's password (at least 6 characters).
+                role:
+                  type: string
+                  enum: [retailer, customer, admin]
+                  description: The role of the user.
+      responses:
+        "201":
+          description: User registered successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User created successfully. Please check your email to verify your account.
+        "400":
+          description: Bad request (e.g., invalid input).
+        "409":
+          description: Conflict (e.g., user with this email already exists).
+
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: Log in a user
+      description: Authenticates a user and returns access and refresh tokens.
+      operationId: loginUser
+      requestBody:
+        description: User login credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address.
+                password:
+                  type: string
+                  format: password
+                  description: User's password.
+      responses:
+        "200":
+          description: User logged in successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  refreshToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        "400":
+          description: Bad request (e.g., invalid input).
+        "401":
+          description: Unauthorized (e.g., invalid credentials).
+
+  /auth/logout:
+    get:
+      tags: [Authentication]
+      summary: Log out a user
+      description: Logs out the currently authenticated user.
+      operationId: logoutUser
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: User logged out successfully.
+        "401":
+          description: Unauthorized.
+
+  /auth/refresh:
+    get:
+      tags: [Authentication]
+      summary: Refresh access token
+      description: Refreshes the access token using the refresh token.
+      operationId: refreshToken
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Access token refreshed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        "401":
+          description: Unauthorized.
+
+  /auth/email/verify/{code}:
+    get:
+      tags: [Authentication]
+      summary: Verify email address
+      description: Verifies a user's email address using a verification code.
+      operationId: verifyEmail
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: The email verification code.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Email verified successfully.
+        "400":
+          description: Bad request (e.g., invalid or expired code).
+        "404":
+          description: Not found (e.g., user not found).
+
+  /auth/password/forgot:
+    post:
+      tags: [Authentication]
+      summary: Send password reset email
+      description: Sends a password reset email to the user.
+      operationId: sendPasswordResetEmail
+      requestBody:
+        description: User's email address.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address.
+      responses:
+        "200":
+          description: Password reset email sent successfully.
+        "400":
+          description: Bad request (e.g., invalid email).
+        "404":
+          description: Not found (e.g., user not found).
+
+  /auth/password/reset:
+    post:
+      tags: [Authentication]
+      summary: Reset password
+      description: Resets the user's password using a verification code.
+      operationId: resetPassword
+      requestBody:
+        description: New password and verification code.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+                - verificationCode
+              properties:
+                password:
+                  type: string
+                  format: password
+                  description: The new password (at least 6 characters).
+                verificationCode:
+                  type: string
+                  description: The password reset verification code.
+      responses:
+        "200":
+          description: Password reset successfully.
+        "400":
+          description: Bad request (e.g., invalid or expired code).
+
+  # --- Users Paths ---
+  /users/current:
+    get:
+      tags: [Users]
+      summary: Get current user
+      description: Retrieves the currently authenticated user's information.
+      operationId: getCurrentUser
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Current user's information.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized.
+    put:
+      tags: [Users]
+      summary: Update current user
+      description: Updates the currently authenticated user's information.
+      operationId: updateCurrentUser
+      security:
+        - cookieAuth: []
+      requestBody:
+        description: User update details.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's new email address.
+                password:
+                  type: string
+                  format: password
+                  description: User's new password (at least 6 characters).
+      responses:
+        "200":
+          description: User updated successfully.
+        "400":
+          description: Bad request (e.g., invalid input).
+        "401":
+          description: Unauthorized.
+    delete:
+      tags: [Users]
+      summary: Delete current user
+      description: Deletes the currently authenticated user's account.
+      operationId: deleteCurrentUser
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: User deleted successfully.
+        "401":
+          description: Unauthorized.
+
+  /users:
+    get:
+      tags: [Users]
+      summary: Get all users
+      description: Retrieves a list of all users (admin only).
+      operationId: getAllUsers
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: limit
+          in: query
+          description: The number of users to return.
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: The number of users to skip.
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: A list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized.
+        "403":
+          description: Forbidden.
+
+  /users/{userId}:
+    get:
+      tags: [Users]
+      summary: Get user by ID
+      description: Retrieves a user by their ID (admin only).
+      operationId: getUserById
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The ID of the user to retrieve.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The user's information.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized.
+        "403":
+          description: Forbidden.
+        "404":
+          description: Not found.
+    delete:
+      tags: [Users]
+      summary: Delete user by ID
+      description: Deletes a user by their ID (admin only).
+      operationId: deleteUserById
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The ID of the user to delete.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User deleted successfully.
+        "401":
+          description: Unauthorized.
+        "403":
+          description: Forbidden.
+        "404":
+          description: Not found.

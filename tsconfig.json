@@ -49,5 +49,5 @@
 		"skipLibCheck": true
 	},
 	"include": ["src/**/*", "src/routes/v1", "src/@types/**/*"],
-	"exclude": ["node_modules"]
+	"exclude": ["node_modules", "docs"]
 }
