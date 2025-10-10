@@ -5,6 +5,8 @@ info:
   version: 1.0.0
   description: A Scalable RESTful API for e-commerce related rources like users, comments, products, likes, cart, categories, etc.
 servers:
+  - url: http://localhost:3000/api/v1
+    description: API v1 Base Path Local Development
   - url: https://e-commerce-api.deephiwase.xyz/api/v1
     description: API v1 Base Path
 tags:
@@ -48,10 +50,133 @@ components:
           format: objectid
           description: Unique identifier for the users
           readOnly: true
-        username:
+        email:
           type: string
-          description: User's unique username
-          minLength: 50
+          format: email
+          description: User's email address.
+        role:
+          type: string
+          enum: [retailer, customer, admin]
+          description: The role of the user.
+        verified:
+          type: boolean
+          description: Whether the user's email is verified.
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time the user was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date and time the user was last updated.
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: objectid
+          description: Unique identifier for the product.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the product.
+        description:
+          type: string
+          description: A description of the product.
+        slug:
+          type: string
+          description: The slug for the product URL.
+          readOnly: true
+        price:
+          type: number
+          format: float
+          description: The price of the product.
+        discountedPrice:
+          type: number
+          format: float
+          description: The discounted price of the product.
+        stock:
+          type: integer
+          description: The number of items in stock.
+        category:
+          type: string
+          format: objectid
+          description: The ID of the category this product belongs to.
+        brand:
+          type: string
+          description: The brand of the product.
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              publicId:
+                type: string
+              url:
+                type: string
+                format: url
+              width:
+                type: integer
+              height:
+                type: integer
+        ratings:
+          type: object
+          properties:
+            average:
+              type: number
+              format: float
+              description: The average rating.
+            count:
+              type: integer
+              description: The number of ratings.
+        isFeatured:
+          type: boolean
+          description: Whether the product is featured.
+        retailer:
+          type: string
+          format: objectid
+          description: The ID of the retailer who owns this product.
+        likesCount:
+          type: integer
+          description: The number of likes for the product.
+        commentsCount:
+          type: integer
+          description: The number of comments for the product.
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time the product was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date and time the product was last updated.
+    Comment:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: objectid
+          description: Unique identifier for the comment.
+          readOnly: true
+        productId:
+          type: string
+          format: objectid
+          description: The ID of the product this comment belongs to.
+        userId:
+          type: string
+          format: objectid
+          description: The ID of the user who made the comment.
+        content:
+          type: string
+          description: The content of the comment.
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time the comment was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date and time the comment was last updated.
 
 # --- API Paths ---
 paths:
@@ -434,5 +559,409 @@ paths:
           description: Unauthorized.
         "403":
           description: Forbidden.
+        "404":
+          description: Not found.
+  # --- Products Paths ---
+  /products:
+    get:
+      tags: [Products]
+      summary: Get all products
+      description: Retrieves a list of all products.
+      operationId: getAllProducts
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: limit
+          in: query
+          description: The number of products to return.
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: The number of products to skip.
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: A list of products.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+                  total:
+                    type: integer
+                  products:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+        "401":
+          description: Unauthorized.
+    post:
+      tags: [Products]
+      summary: Create a new product
+      description: Creates a new product (retailer only).
+      operationId: createProduct
+      security:
+        - cookieAuth: []
+      requestBody:
+        description: Product details
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                discountedPrice:
+                  type: number
+                stock:
+                  type: integer
+                categoryId:
+                  type: string
+                brand:
+                  type: string
+                isFeatured:
+                  type: boolean
+                product_images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        "201":
+          description: Product created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Bad request (e.g., invalid input).
+        "401":
+          description: Unauthorized.
+        "403":
+          description: Forbidden.
+
+  /products/{slug}:
+    get:
+      tags: [Products]
+      summary: Get product by slug
+      description: Retrieves a product by its slug.
+      operationId: getProductBySlug
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: The slug of the product to retrieve.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The product's information.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "401":
+          description: Unauthorized.
+        "404":
+          description: Not found.
+
+  /products/{productId}:
+    put:
+      tags: [Products]
+      summary: Update a product
+      description: Updates a product by its ID (retailer only).
+      operationId: updateProduct
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The ID of the product to update.
+          schema:
+            type: string
+      requestBody:
+        description: Product update details.
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                discountedPrice:
+                  type: number
+                stock:
+                  type: integer
+                categoryId:
+                  type: string
+                brand:
+                  type: string
+                isFeatured:
+                  type: boolean
+                product_images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        "200":
+          description: Product updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Bad request (e.g., invalid input).
+        "401":
+          description: Unauthorized.
+        "403":
+          description: Forbidden.
+        "404":
+          description: Not found.
+    delete:
+      tags: [Products]
+      summary: Delete a product
+      description: Deletes a product by its ID (retailer or admin only).
+      operationId: deleteProduct
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The ID of the product to delete.
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Product deleted successfully.
+        "401":
+          description: Unauthorized.
+        "403":
+          description: Forbidden.
+        "404":
+          description: Not found.
+
+  /products/retailer/{retailerId}:
+    get:
+      tags: [Products]
+      summary: Get products by retailer
+      description: Retrieves a list of products for a specific retailer.
+      operationId: getProductsByRetailer
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: retailerId
+          in: path
+          required: true
+          description: The ID of the retailer.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The number of products to return.
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: The number of products to skip.
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: A list of products.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+                  total:
+                    type: integer
+                  products:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+        "401":
+          description: Unauthorized.
+        "404":
+          description: Not found.
+  # --- Comments Paths ---
+  /comments/product/{productId}:
+    get:
+      tags: [Comments]
+      summary: Get comments by product
+      description: Retrieves all comments for a specific product.
+      operationId: getCommentsByProduct
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The ID of the product.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A list of comments.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comments:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Comment"
+        "401":
+          description: Unauthorized.
+        "404":
+          description: Not found.
+    post:
+      tags: [Comments]
+      summary: Create a comment
+      description: Creates a new comment for a product.
+      operationId: createComment
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The ID of the product to comment on.
+          schema:
+            type: string
+      requestBody:
+        description: Comment content
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - content
+              properties:
+                content:
+                  type: string
+                  description: The content of the comment.
+      responses:
+        "201":
+          description: Comment created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+        "400":
+          description: Bad request (e.g., invalid input).
+        "401":
+          description: Unauthorized.
+        "404":
+          description: Not found.
+
+  /comments/{commentId}:
+    delete:
+      tags: [Comments]
+      summary: Delete a comment
+      description: Deletes a comment by its ID.
+      operationId: deleteComment
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          description: The ID of the comment to delete.
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Comment deleted successfully.
+        "401":
+          description: Unauthorized.
+        "403":
+          description: Forbidden.
+        "404":
+          description: Not found.
+
+  # --- Likes Paths ---
+  /likes/product/{productId}:
+    post:
+      tags: [Likes]
+      summary: Like a product
+      description: Likes a product.
+      operationId: likeProduct
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The ID of the product to like.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product liked successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  likesCount:
+                    type: integer
+        "400":
+          description: Bad request (e.g., product already liked).
+        "401":
+          description: Unauthorized.
+        "404":
+          description: Not found.
+    delete:
+      tags: [Likes]
+      summary: Unlike a product
+      description: Unlikes a product.
+      operationId: unlikeProduct
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The ID of the product to unlike.
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Product unliked successfully.
+        "400":
+          description: Bad request (e.g., product not liked).
+        "401":
+          description: Unauthorized.
         "404":
           description: Not found.

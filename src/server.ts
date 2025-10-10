@@ -59,10 +59,12 @@ app.use(helmet());
 
 app.use(limiter);
 
-// const swaggerDocument = YAML.load(
-// 	path.join(__dirname, "../docs/swagger/openapi.yaml"),
-// );
-// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+const swaggerDocument = YAML.load(
+	path.join(__dirname, "../docs/swagger/openapi.yaml"),
+);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+let server: ReturnType<typeof app.listen>;
 
 (async () => {
 	try {
@@ -74,9 +76,9 @@ app.use(limiter);
 
 		app.use(errorHandler);
 
-		app.listen(config.PORT, () => {
+		server = app.listen(config.PORT, () => {
 			logger.info(`Server running on: http://localhost:${config.PORT}`);
-			// logger.info(`Swagger docs at: http://localhost:${config.PORT}/api-docs`);
+			logger.info(`Swagger docs at: http://localhost:${config.PORT}/api-docs`);
 		});
 	} catch (err) {
 		logger.error("Failed to start the server", err);
@@ -89,6 +91,12 @@ app.use(limiter);
 
 const handleServerShutdown = async () => {
 	try {
+		if (server) {
+			server.close(() => {
+				logger.info("HTTP server closed");
+			});
+		}
+
 		await disconnectFromDatabase();
 
 		logger.warn("Server SHUTDOWN");
