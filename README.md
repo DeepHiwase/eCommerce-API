@@ -20,11 +20,20 @@
 
 ## 🧐 About <a name = "about"></a>
 
-Write about 1-2 paragraphs describing the purpose of your project.
+WThought to make a scalable api for e-commerce application which will consider this stack.
+Many features are comming to add and working on it.
 
 ## 🚀 Deployment <a name = "deployment"></a>
 
-Add additional notes about how to deploy this on a live system.
+Deployed on 
+- VPS - AWS - Url - [live v1 version api](https://e-commerce-api.deephiwase.xyz/api/v1);
+- Docs - GitBook - [Docs url](https://docs.e-commerce-api.deephiwase.xyz/) - if outoff trial then need to update url
+- Status monitoring of api - Better Stack  - [Live page](https://status.e-commerce-api.deephiwase.xyz/)
+
+Upcoming working on 
+- Docker Image and compose file
+- Implemetion of redis and complete openapi
+- cicd pipeline with github actions.
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
@@ -33,3 +42,5 @@ Add additional notes about how to deploy this on a live system.
 - [NodeJs](https://nodejs.org/en/) - Server Environment
 - [Stripe](https://stripe.com/in) - Payment Gateway
 - [TypeScript](https://www.typescriptlang.org/) - Programming Language
+
+Note: Free to take this as inspiration ans learn from this repo. Made with ❤️‍🔥 bt deephiwase.
